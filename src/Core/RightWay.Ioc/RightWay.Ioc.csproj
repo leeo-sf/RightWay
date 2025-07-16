@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RightWay.Application\RightWay.Application.csproj" />
+    <ProjectReference Include="..\RightWay.Data\RightWay.Data.csproj" />
+    <ProjectReference Include="..\RightWay.Domain\RightWay.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
