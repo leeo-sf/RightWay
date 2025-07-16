@@ -9,6 +9,8 @@ builder.Services.AddDbContextConfiguration(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddVersioning();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -19,5 +21,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
