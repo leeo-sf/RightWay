@@ -1,6 +1,6 @@
 ﻿namespace RightWay.Domain.Enum;
 
-public enum RouteStatus
+public enum RouteStatusEnum
 {
     PLANNED,
     PROGRESS,

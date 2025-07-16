@@ -1,6 +1,6 @@
 ﻿namespace RightWay.Domain.Enum;
 
-public enum PriorityLevel
+public enum PriorityLevelEnum
 {
     LOW, NORMAL, URGENT
 }

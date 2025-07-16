@@ -1,6 +1,6 @@
 ﻿namespace RightWay.Domain.Enum;
 
-public enum OrderStatus
+public enum OrderStatusEnum
 {
     PENDING,
     SCHEDULED,

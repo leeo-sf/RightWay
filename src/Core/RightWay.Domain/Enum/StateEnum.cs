@@ -1,6 +1,6 @@
 ﻿namespace RightWay.Domain.Enum;
 
-public enum State
+public enum StateEnum
 {
     AC,
     AL,

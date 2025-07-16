@@ -5,11 +5,11 @@ using RightWay.Domain.Entity;
 
 namespace RightWay.Data.EntityTypeConfiguration;
 
-internal class OrderEntityTypeConfiguration
+internal class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.ToTable("address");
+        builder.ToTable("order");
         builder.ConfigureBaseEntity();
         builder.Property(c => c.Weight).IsRequired().HasColumnName("weight").HasComment("Peso");
         builder.Property(c => c.Height).IsRequired().HasColumnName("height").HasComment("Altura");

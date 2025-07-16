@@ -5,11 +5,11 @@ using RightWay.Domain.Entity;
 
 namespace RightWay.Data.EntityTypeConfiguration;
 
-internal class DriverEntityTypeConfiguration
+internal class DriverEntityTypeConfiguration : IEntityTypeConfiguration<Driver>
 {
     public void Configure(EntityTypeBuilder<Driver> builder)
     {
-        builder.ToTable("address");
+        builder.ToTable("driver");
         builder.ConfigureBaseEntity();
         builder.Property(c => c.Name).IsRequired().HasColumnName("name").HasComment("Nome");
         builder.Property(c => c.DriverLincenseNumber).IsRequired().HasColumnName("driver_lincense_number").HasComment("Número da carteira de motorista");
