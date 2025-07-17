@@ -9,7 +9,10 @@ builder.Services.AddDbContextConfiguration(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddMediatorConfiguration();
 builder.Services.AddVersioning();
+
+builder.Services.AddControllersConfiguration();
 
 var app = builder.Build();
 
