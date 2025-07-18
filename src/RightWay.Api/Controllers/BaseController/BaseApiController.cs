@@ -6,11 +6,9 @@ namespace RightWay.Api.Controllers.BaseController;
 
 [ApiController]
 [Route("api/[controller]")]
-public abstract class BaseApiController : ControllerBase
+public class BaseApiController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public BaseApiController(IMediator mediator) => _mediator = mediator;
+    private readonly IMediator _mediator = mediator;
 
     protected async Task<ActionResult<T>> SendCommand<T>(IRequest<Result<T>> request,int statusCode = 200)
     {

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RightWay.Api.Controllers.BaseController;
 using RightWay.Application.Request;
+using RightWay.Application.Response;
 using System.ComponentModel.DataAnnotations;
 
 namespace RightWay.Api.Controllers;
@@ -14,6 +15,6 @@ public class RouteController(IMediator mediator)
     : BaseApiController(mediator)
 {
     [HttpPost("calculate")]
-    public async Task<ActionResult> CalculateBestRoute([Required, FromBody] RouteCalculationRequest request)
+    public async Task<ActionResult<StatusOperationResponse>> CalculateBestRoute([Required, FromBody] RouteCalculationRequest request)
         => await SendCommand(request);
 }

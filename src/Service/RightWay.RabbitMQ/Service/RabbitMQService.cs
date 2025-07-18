@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RightWay.RabbitMQ.Service;
 
-internal class RabbitMQService : IRabbitMQService
+public class RabbitMQService : IRabbitMQService
 {
     public async Task PublisherAsync<T>(RabbitMQMessage<T> data)
     {
