@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RightWay.Application;
 using RightWay.Application.Config;
+using RightWay.Application.Validator;
 using RightWay.Data;
 using RightWay.RabbitMQ.Interface;
 using RightWay.RabbitMQ.Service;
@@ -25,8 +29,12 @@ public static class AppDependenciesConfiguration
         });
 
     public static void AddControllersConfiguration(this IServiceCollection services)
-        => services.AddControllers(opt =>
-            opt.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer())));
+    {
+        services.AddControllers(opt => opt.Conventions.Add(new RouteTokenTransformerConvention(new SlugifyParameterTransformer())));
+
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssemblyContaining<RouteCalculationValidator>();
+    }
 
     public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -34,6 +42,28 @@ public static class AppDependenciesConfiguration
 
         services.AddSingleton<IRabbitMQService, RabbitMQService>();
     }
+
+    public static void ConfigureValidationInvalidModelStateResponseFactory(this IServiceCollection services)
+        => services.Configure<ApiBehaviorOptions>(opt =>
+        {
+            opt.InvalidModelStateResponseFactory = context =>
+            {
+                var errors = context.ModelState
+                    .SelectMany(ms => ms.Value!.Errors.Select(error => new
+                    {
+                        Field = ms.Key,
+                        Error = error.ErrorMessage
+                    })).ToList();
+
+                var responseObject = new
+                {
+                    Message = "Validation error(s) found.",
+                    Errors = errors
+                };
+
+                return new BadRequestObjectResult(responseObject);
+            };
+        });
 
     private static void ConfigureServiceCredentials<T>(this IServiceCollection services, string sectionName, IConfiguration configuration) where T : class
         => services.AddSingleton(opt => configuration.GetSection(sectionName).Get<T>()!);

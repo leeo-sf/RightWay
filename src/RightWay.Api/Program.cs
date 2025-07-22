@@ -14,6 +14,7 @@ builder.Services.AddMediatorConfiguration();
 builder.Services.AddVersioning();
 
 builder.Services.AddControllersConfiguration();
+builder.Services.ConfigureValidationInvalidModelStateResponseFactory();
 
 var app = builder.Build();
 
