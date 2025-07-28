@@ -2,7 +2,7 @@
 
 namespace RightWay.Domain.Entity.Base;
 
-public record BaseEntity(
+public abstract record BaseEntity(
     [property: NotMapped] Guid id,
     [property: NotMapped] DateTime createdIn,
     [property: NotMapped] DateTime updatedIn)

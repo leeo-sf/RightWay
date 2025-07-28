@@ -9,6 +9,8 @@ using RightWay.Application;
 using RightWay.Application.Config;
 using RightWay.Application.Validator;
 using RightWay.Data;
+using RightWay.Data.Repository;
+using RightWay.Domain.Interface;
 using RightWay.RabbitMQ.Interface;
 using RightWay.RabbitMQ.Service;
 
@@ -41,6 +43,7 @@ public static class AppDependenciesConfiguration
         services.ConfigureServiceCredentials<AppConfiguration>("Service", configuration);
 
         services.AddSingleton<IRabbitMQService, RabbitMQService>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
     }
 
     public static void ConfigureValidationInvalidModelStateResponseFactory(this IServiceCollection services)
@@ -57,7 +60,6 @@ public static class AppDependenciesConfiguration
 
                 var responseObject = new
                 {
-                    Message = "Validation error(s) found.",
                     Errors = errors
                 };
 

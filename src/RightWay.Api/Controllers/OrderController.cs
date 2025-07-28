@@ -11,10 +11,10 @@ namespace RightWay.Api.Controllers;
 [ApiController]
 [ApiVersion(1)]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class RouteController(IMediator mediator) 
+public class OrderController(IMediator mediator)
     : BaseApiController(mediator)
 {
-    [HttpPost("calculate")]
-    public async Task<ActionResult<StatusOperationResponse>> CalculateBestRoute([Required, FromBody] OrderConfirmedRequest request)
+    [HttpPost]
+    public async Task<ActionResult<StatusOperationResponse>> RegisterConfirmedOrder([Required, FromBody] OrderConfirmedRequest request)
         => await SendCommand(request);
 }
