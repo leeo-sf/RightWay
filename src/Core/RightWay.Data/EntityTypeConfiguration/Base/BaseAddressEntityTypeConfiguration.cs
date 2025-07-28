@@ -19,8 +19,8 @@ internal class BaseAddressEntityTypeConfiguration : IEntityTypeConfiguration<Bas
         builder.Property(c => c.Region).IsRequired().HasColumnName("region").HasComment("Região");
         builder.Property(c => c.MunicipalCode).IsRequired().HasColumnName("municipal_code").HasComment("Código municipal");
         builder.Property(c => c.Latitude).IsRequired().HasColumnName("latitude").HasComment("Latitude");
-        builder.Property(c => c.Longitude).IsRequired().HasColumnName("longitude").HasComment("Longitude");
-        builder.Property(c => c.Latitude).IsRequired().HasColumnName("latitude").HasComment("Latitude");
+        builder.Property(c => c.Longitude).HasColumnName("longitude").HasComment("Longitude");
+        builder.Property(c => c.Latitude).HasColumnName("latitude").HasComment("Latitude");
         builder.HasMany(c => c.Addresses).WithOne(c => c.BaseAddress).HasForeignKey(c => c.BaseAddressId);
     }
 }

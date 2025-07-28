@@ -18,6 +18,6 @@ internal static class AddressMessage
     public static string RegionMaximumSize = "The 'Region' exceeded the allowed size";
     public static string MunicipalCodeNotEmpty = "The 'Municipal Code' must be filled in";
     public static string NegativeMunicipalCode = "The 'Municipal Code' cannot be negative";
-    public static string NumberNotEmpty = "The 'Municipal Code' must be filled in";
+    public static string NumberNotEmpty = "The 'Number' must be filled in";
     public static string NegativeNumber = "The address number cannot be negative";
 }
