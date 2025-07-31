@@ -11,7 +11,7 @@ public class BaseAddressTests
     [InlineData("01001-000", "Praça da Sé", "Sé", "São Paulo", StateEnum.SP, "São Paulo", "Sudeste", 3550308, -23.55031, -46.634201)]
     [InlineData("01001-000", "Praça da Sé", "Sé", "São Paulo", StateEnum.SP, "São Paulo", "Sudeste", 3550308, null, -46.634201)]
     [InlineData("01001-000", "Praça da Sé", "Sé", "São Paulo", StateEnum.SP, "São Paulo", "Sudeste", 3550308, -23.55031, null)]
-    public void Must_Create_BaseAddress_With_Valid_Parameters(string zipCode, string publicPlace, string neighborhood, string locality, StateEnum uf, string state, string region, int municipalCode, float? latitude, float? longitude)
+    public void Must_Create_BaseAddress_With_Valid_Parameters(string zipCode, string publicPlace, string neighborhood, string locality, StateEnum uf, string state, string region, int municipalCode, double? latitude, double? longitude)
     {
         Guid baseAddressId = Guid.NewGuid();
         DateTime createdAt = DateTime.Now.ToUniversalTime(), updatedIn = DateTime.Now.ToUniversalTime();
