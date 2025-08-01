@@ -19,7 +19,7 @@ public class OrderValidator
         RuleFor(c => c.PriorityLevel).NotEmpty().WithMessage(OrderMessage.NotEmptyPriorityLevel)
             .Must(status => Enum.IsDefined(typeof(PriorityLevelEnum), status)).WithMessage(OrderMessage.InvalidPriorityLevel);
 
-        RuleFor(c => c.Address)
+        RuleFor(c => c.Address).NotNull().WithMessage(OrderMessage.AddressNotEmpty)
             .SetValidator(new AddressValidator());
     }
 }
