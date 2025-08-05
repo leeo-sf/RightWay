@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using MediatR;
 using Moq;
-using RightWay.Application.Contract;
 using RightWay.Application.Request;
 using RightWay.Application.Response;
 using RightWay.Application.Tests.TestData;
