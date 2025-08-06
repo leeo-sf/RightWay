@@ -11,8 +11,9 @@ public class RouteTests
     [MemberData(nameof(RouteTestData.ValidDate), MemberType = typeof(RouteTestData))]
     public void Must_Create_Route_With_Valid_Parameters(DateTime estimatedStart, DateTime estimatedEnd)
     {
+        var currentDateTime = DateTime.Now;
         Guid routeId = Guid.NewGuid(), departureAddressId = Guid.NewGuid(), vehicleId = Guid.NewGuid();
-        DateTime createdAt = DateTime.Now.ToUniversalTime(), updatedIn = DateTime.Now.ToUniversalTime();
+        DateTime createdAt = currentDateTime.ToUniversalTime(), updatedIn = currentDateTime.ToUniversalTime();
         var status = RouteStatusEnum.PLANNED;
         var totalDistanceKm = 10.2f;
 
@@ -34,8 +35,9 @@ public class RouteTests
     [MemberData(nameof(RouteTestData.InvalidDate), MemberType = typeof(RouteTestData))]
     public void No_Must_Create_Route_With_Invalid_Planning_Dates(DateTime estimatedStart, DateTime estimatedEnd)
     {
+        var currentDateTime = DateTime.Now;
         Guid routeId = Guid.NewGuid(), departureAddressId = Guid.NewGuid(), vehicleId = Guid.NewGuid();
-        DateTime createdAt = DateTime.Now.ToUniversalTime(), updatedIn = DateTime.Now.ToUniversalTime();
+        DateTime createdAt = currentDateTime.ToUniversalTime(), updatedIn = currentDateTime.ToUniversalTime();
         var status = RouteStatusEnum.PLANNED;
         var totalDistanceKm = 10.2f;
 
