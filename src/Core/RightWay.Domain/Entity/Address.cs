@@ -2,7 +2,7 @@
 
 namespace RightWay.Domain.Entity;
 
-public record Address(Guid Id, DateTime CreatedIn, DateTime UpdatedIn, int Number, string Complement, Guid BaseAddressId, Guid? OrderId, Guid? RouteId)
+public record Address(Guid Id, DateTime CreatedIn, DateTime UpdatedIn, int Number, string? Complement, Guid BaseAddressId, Guid? OrderId, Guid? RouteId)
     : BaseEntity(Id, CreatedIn, UpdatedIn)
 {
     public BaseAddress BaseAddress { get; } = default!;

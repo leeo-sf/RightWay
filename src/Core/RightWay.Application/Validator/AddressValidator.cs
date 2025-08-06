@@ -4,7 +4,7 @@ using RightWay.Application.Validator.Messages;
 
 namespace RightWay.Application.Validator;
 
-internal class AddressValidator
+public class AddressValidator
     : AbstractValidator<AddressContract>
 {
     public AddressValidator()
@@ -14,13 +14,13 @@ internal class AddressValidator
             .MaximumLength(10).WithMessage(AddressMessage.ZipCodeMaximumSize);
 
         RuleFor(c => c.PublicPlace).NotEmpty().WithMessage(AddressMessage.PublicPlaceNotEmpty)
-            .MinimumLength(5).WithMessage(AddressMessage.PublicPlaceMaximumSize);
+            .MinimumLength(5).WithMessage(AddressMessage.PublicPlaceMinimumSize);
 
         RuleFor(c => c.Neighborhood).NotEmpty().WithMessage(AddressMessage.NeighborhoodNotEmpty)
-            .MinimumLength(5).WithMessage(AddressMessage.NeighborhoodMaximumSize);
+            .MinimumLength(2).WithMessage(AddressMessage.NeighborhoodMinimumSize);
 
         RuleFor(c => c.Locality).NotEmpty().WithMessage(AddressMessage.LocalityNotEmpty)
-            .MinimumLength(5).WithMessage(AddressMessage.LocalityMaximumSize);
+            .MinimumLength(3).WithMessage(AddressMessage.LocalityMaximumSize);
 
         RuleFor(c => c.State).NotEmpty().WithMessage(AddressMessage.StateNotEmpty)
             .MinimumLength(3).WithMessage(AddressMessage.StateMaximumSize);
