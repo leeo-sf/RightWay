@@ -5,7 +5,7 @@ internal static class DependenciesTestData
     public static Dictionary<string, string> ServiceTestSettings()
         => new Dictionary<string, string>
         {
-            { "Services", "Test" },
-            { "ConnectionsStrings", "Database" }
+            { "Service", "Test" },
+            { "ConnectionsStrings:Database", "mydb:string" }
         };
 }
