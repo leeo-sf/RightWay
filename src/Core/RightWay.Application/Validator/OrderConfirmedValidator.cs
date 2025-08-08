@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using RightWay.Application.Request;
+using RightWay.Application.Request.Order;
 using RightWay.Application.Validator.Messages;
 
 namespace RightWay.Application.Validator;

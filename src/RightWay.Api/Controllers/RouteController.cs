@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RightWay.Api.Controllers.BaseController;
-using RightWay.Application.Request;
+using RightWay.Application.Request.Order;
 using RightWay.Application.Response;
 using System.ComponentModel.DataAnnotations;
 

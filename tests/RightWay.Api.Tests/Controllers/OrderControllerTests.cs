@@ -2,7 +2,7 @@
 using Moq;
 using RightWay.Api.Controllers;
 using RightWay.Api.Tests.TestData;
-using RightWay.Application.Request;
+using RightWay.Application.Request.Order;
 
 namespace RightWay.Api.Tests.Controllers;
 

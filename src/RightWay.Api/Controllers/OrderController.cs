@@ -2,7 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RightWay.Api.Controllers.BaseController;
-using RightWay.Application.Request;
+using RightWay.Application.Dto;
+using RightWay.Application.Request.Order;
 using RightWay.Application.Response;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,4 +18,8 @@ public class OrderController(IMediator mediator)
     [HttpPost]
     public async Task<ActionResult<StatusOperationResponse>> RegisterConfirmedOrder([Required, FromBody] OrderConfirmedRequest request)
         => await SendCommand(request);
+
+    [HttpPost("pending-separation")]
+    public async Task<ActionResult<List<OrderDto>>> OrdersAwaitingSeparationAsync()
+        => await SendCommand(new OrdersAwaitingSeparationRequest());
 }

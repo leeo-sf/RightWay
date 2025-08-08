@@ -42,6 +42,7 @@ public static class AppDependenciesConfiguration
     {
         services.ConfigureServiceCredentials<AppConfiguration>("Service", configuration);
 
+        services.AddSingleton(AutoMapperConfiguration.RegisterMaps().CreateMapper());
         services.AddSingleton<IRabbitMQService, RabbitMQService>();
         services.AddScoped<IOrderRepository, OrderRepository>();
     }
