@@ -19,7 +19,11 @@ public class OrderController(IMediator mediator)
     public async Task<ActionResult<StatusOperationResponse>> RegisterConfirmedOrder([Required, FromBody] OrderConfirmedRequest request)
         => await SendCommand(request);
 
-    [HttpPost("pending-separation")]
+    [HttpGet("pending-separation")]
     public async Task<ActionResult<List<OrderDto>>> OrdersAwaitingSeparationAsync()
         => await SendCommand(new OrdersAwaitingSeparationRequest());
+
+    [HttpPost("separated")]
+    public async Task<ActionResult> MarkOrderAsSeparatedAsync([Required, FromQuery] OrderSeparatedRequest request)
+        => await SendCommand(request);
 }
