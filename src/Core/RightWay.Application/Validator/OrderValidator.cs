@@ -11,7 +11,7 @@ public class OrderValidator
     public OrderValidator()
     {
         RuleFor(c => c.Weight).NotEmpty().WithMessage(OrderMessage.NotEmptyWeight)
-            .InclusiveBetween(0.01f, 0.01f).WithMessage(OrderMessage.WeightGreatherThanPermitted);
+            .InclusiveBetween(0.01f, 50f).WithMessage(OrderMessage.WeightGreatherThanPermitted);
 
         RuleFor(c => c.Height).NotEmpty().WithMessage(OrderMessage.NotEmptyHeight)
             .InclusiveBetween(0.01f, 1.50f).WithMessage(OrderMessage.HeightGreatherThanPermitted);
