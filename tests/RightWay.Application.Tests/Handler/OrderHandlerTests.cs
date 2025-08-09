@@ -35,15 +35,15 @@ public class OrderHandlerTests
         response.Value.Message.Should().Be("Orders awaiting separation.");
     }
 
-    /*[Fact]
-    public async Task Validate_Whether_The_Operation_Is_Interrupted_When_The_Request_Is_Canceled()
+    [Fact]
+    public async Task Handler_Must_Return_A_ListOf_Orders_AwaitingPicking_When_The_Command_IsValid()
     {
-        var handler = new OrderHandler(mock.Object);
-        var command = new OrderConfirmedRequest(OrderTestData.ValidOrdersToBeCreated);
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
+        var handler = new OrderHandler(mock.Object, mapper.Object);
+        var command = new OrdersAwaitingSeparationRequest();
+        var response = await handler.Handle(command, CancellationToken.None);
 
-        await Assert.ThrowsAsync<OperationCanceledException>(() =>
-            handler.Handle(command, cts.Token));
-    }*/
+        response.Should().NotBeNull();
+        response.Exception.Should().BeNull();
+        response.IsSuccess.Should().BeTrue();
+    }
 }

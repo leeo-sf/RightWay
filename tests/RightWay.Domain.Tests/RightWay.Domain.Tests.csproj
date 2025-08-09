@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Core\RightWay.Application\RightWay.Application.csproj" />
     <ProjectReference Include="..\..\src\Core\RightWay.Domain\RightWay.Domain.csproj" />
   </ItemGroup>
 
