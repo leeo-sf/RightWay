@@ -1,6 +1,5 @@
-﻿using RightWay.Domain.Enum;
-using System.ComponentModel;
-using System.Reflection;
+﻿using RightWay.Application.Extension;
+using RightWay.Domain.Enum;
 
 namespace RightWay.Domain.Tests.Enums;
 
@@ -16,7 +15,7 @@ public class OrderStatusEnumTests
     public void Value_And_Description_Must_Match(OrderStatusEnum orderStatus, int expectedValue, string expectedDescription)
     {
         var value = (int)orderStatus;
-        var description = orderStatus.GetType().GetField(orderStatus.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description;
+        var description = orderStatus.GetDescription();
 
         Assert.Equal(expectedDescription, description);
         Assert.Equal(expectedValue, value);

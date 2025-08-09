@@ -13,8 +13,8 @@ internal class AddressEntityTypeConfiguration : IEntityTypeConfiguration<Address
         builder.ConfigureBaseEntity();
         builder.Property(c => c.Number).IsRequired().HasColumnName("number").HasComment("Número");
         builder.Property(c => c.Complement).HasColumnName("complement").HasComment("Complemento");
-        builder.Property(c => c.OrderId).IsRequired().HasColumnName("order_id").HasComment("Pedido");
-        builder.Property(c => c.RouteId).IsRequired().HasColumnName("route_id").HasComment("Rota");
+        builder.Property(c => c.OrderId).HasColumnName("order_id").HasComment("Pedido");
+        builder.Property(c => c.RouteId).HasColumnName("route_id").HasComment("Rota");
         builder.HasOne(c => c.Order).WithOne(c => c.Address).HasForeignKey<Order>(c => c.AddressId);
         builder.HasOne(c => c.Route).WithOne(c => c.DepartureAddress).HasForeignKey<Route>(c => c.DepartureAddressId);
     }

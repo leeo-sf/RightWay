@@ -12,4 +12,10 @@ public class BaseRepository<T>(AppDbContext context)
         _context.AddRange(entities);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public virtual async Task UpdateAsync(T entities, CancellationToken cancellationToken)
+    {
+        _context.Update(entities);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
 }

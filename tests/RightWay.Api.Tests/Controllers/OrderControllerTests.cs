@@ -2,7 +2,7 @@
 using Moq;
 using RightWay.Api.Controllers;
 using RightWay.Api.Tests.TestData;
-using RightWay.Application.Request;
+using RightWay.Application.Request.Order;
 
 namespace RightWay.Api.Tests.Controllers;
 
@@ -20,5 +20,24 @@ public class OrderControllerTests
         await controller.RegisterConfirmedOrder(new(request));
 
         _mock.Verify(m => m.Send(It.IsAny<OrderConfirmedRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Must_Call_The_Mediator_ToUpdateOrder_When_Requested()
+    {
+        var controller = new OrderController(_mock.Object);
+        var request = Guid.NewGuid();
+        await controller.MarkOrderAsSeparatedAsync(request);
+
+        _mock.Verify(m => m.Send(It.IsAny<OrderSeparatedRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Must_Call_The_Mediator_ToSeek_A_Pending_Separation_When_Requested()
+    {
+        var controller = new OrderController(_mock.Object);
+        await controller.OrdersAwaitingSeparationAsync();
+
+        _mock.Verify(m => m.Send(It.IsAny<OrdersAwaitingSeparationRequest>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
