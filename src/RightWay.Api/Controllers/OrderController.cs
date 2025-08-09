@@ -23,7 +23,7 @@ public class OrderController(IMediator mediator)
     public async Task<ActionResult<List<OrderDto>>> OrdersAwaitingSeparationAsync()
         => await SendCommand(new OrdersAwaitingSeparationRequest());
 
-    [HttpPost("separated")]
-    public async Task<ActionResult> MarkOrderAsSeparatedAsync([Required, FromQuery] OrderSeparatedRequest request)
-        => await SendCommand(request);
+    [HttpPost("{orderId:guid}/separated")]
+    public async Task<ActionResult> MarkOrderAsSeparatedAsync([Required, FromRoute] Guid orderId)
+        => await SendCommand(new OrderSeparatedRequest(orderId));
 }
