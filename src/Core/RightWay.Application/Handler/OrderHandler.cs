@@ -13,7 +13,8 @@ namespace RightWay.Application.Handler;
 public class OrderHandler
     : IRequestHandler<OrderConfirmedRequest, Result<StatusOperationResponse>>,
         IRequestHandler<OrdersAwaitingSeparationRequest, Result<List<OrderDto>>>,
-        IRequestHandler<OrderSeparatedRequest, Result>
+        IRequestHandler<OrderSeparatedRequest, Result>,
+        IRequestHandler<OrdersReadyToDispatchRequest, Result<List<OrderDto>>>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IMapper _mapper;
@@ -42,7 +43,7 @@ public class OrderHandler
 
     public async Task<Result<List<OrderDto>>> Handle(OrdersAwaitingSeparationRequest request, CancellationToken cancellationToken)
     {
-        var orders = await _orderRepository.AwaitingSeparationAsync(cancellationToken);
+        var orders = await _orderRepository.GetOrdersByStatusAsync(OrderStatusEnum.SEPARATION, cancellationToken);
         return orders is not null
             ? _mapper.Map<List<OrderDto>>(orders)
             : [];
@@ -58,7 +59,15 @@ public class OrderHandler
         if (!order.Status.Equals(OrderStatusEnum.SEPARATION))
             return new(new ApplicationException("Order has already been separated"));
 
-        await _orderRepository.UpdateAsync(order with { updatedIn = DateTime.Now.ToUniversalTime(), Status = OrderStatusEnum.PENDING }, cancellationToken);
+        await _orderRepository.UpdateAsync(order with { updatedIn = DateTime.Now.ToUniversalTime(), Status = OrderStatusEnum.EXPEDITION }, cancellationToken);
         return new(true);
+    }
+
+    public async Task<Result<List<OrderDto>>> Handle(OrdersReadyToDispatchRequest request, CancellationToken cancellationToken)
+    {
+        var orders = await _orderRepository.GetOrdersByStatusAsync(OrderStatusEnum.EXPEDITION, cancellationToken);
+        return orders is not null
+            ? _mapper.Map<List<OrderDto>>(orders)
+            : [];
     }
 }

@@ -6,24 +6,27 @@ using RightWay.Application.Tests.TestData;
 using RightWay.Application.Response;
 using RightWay.Application.Request.Order;
 using AutoMapper;
+using RightWay.Domain.Enum;
+using RightWay.Ioc.Configuration;
+using RightWay.Domain.Entity;
 
 namespace RightWay.Application.Tests.Handler;
 
 public class OrderHandlerTests
 {
     private readonly Mock<IOrderRepository> mock;
-    private readonly Mock<IMapper> mapper;
+    private readonly IMapper mapper;
 
     public OrderHandlerTests()
     {
         mock = new Mock<IOrderRepository>();
-        mapper = new Mock<IMapper>();
+        mapper = AutoMapperConfiguration.RegisterMaps().CreateMapper();
     }
 
     [Fact]
     public async Task Handler_Must_Create_Order_When_Valid_Command()
     {
-        var handler = new OrderHandler(mock.Object, mapper.Object);
+        var handler = new OrderHandler(mock.Object, mapper);
         var command = new OrderConfirmedRequest(OrderTestData.ValidOrdersToBeCreated);
         var response = await handler.Handle(command, CancellationToken.None);
 
@@ -38,12 +41,76 @@ public class OrderHandlerTests
     [Fact]
     public async Task Handler_Must_Return_A_ListOf_Orders_AwaitingPicking_When_The_Command_IsValid()
     {
-        var handler = new OrderHandler(mock.Object, mapper.Object);
+        var handler = new OrderHandler(mock.Object, mapper);
         var command = new OrdersAwaitingSeparationRequest();
         var response = await handler.Handle(command, CancellationToken.None);
 
         response.Should().NotBeNull();
         response.Exception.Should().BeNull();
         response.IsSuccess.Should().BeTrue();
+        response.Value.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task Handler_Must_Return_OrderNotFound_When_Id_Does_Not_Exists()
+    {
+        mock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync((Order?)null);
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrderSeparatedRequest(Guid.NewGuid());
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().NotBeNull();
+        response.Exception.Message.Should().Be("Order not located");
+        response.Exception.Should().BeOfType<KeyNotFoundException>();
+        response.IsSuccess.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Handler_Must_Return_Order_Has_AlreadyBeen_Separated_When_StatusIsNot_Separation()
+    {
+        var order = OrderTestData.Orders().Where(x => x.Status != OrderStatusEnum.SEPARATION).FirstOrDefault();
+        mock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(order);
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrderSeparatedRequest(Guid.NewGuid());
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().NotBeNull();
+        response.Exception.Message.Should().Be("Order has already been separated");
+        response.Exception.Should().BeOfType<ApplicationException>();
+        response.IsSuccess.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Handler_Must_Return_ListOfOrders_InDispatch_When_ThereAre_Orders_InDispatch()
+    {
+        mock.Setup(x => x.GetOrdersByStatusAsync(It.IsAny<OrderStatusEnum>(), CancellationToken.None))
+            .ReturnsAsync(OrderTestData.Orders().Where(x => x.Status == OrderStatusEnum.EXPEDITION).ToList());
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrdersReadyToDispatchRequest();
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().BeNull();
+        response.IsSuccess.Should().BeTrue();
+        response.Value.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task Handler_Must_Return_EmptyList_When_ThereAre_NoOrders_InDispatch()
+    {
+        mock.Setup(x => x.GetOrdersByStatusAsync(It.IsAny<OrderStatusEnum>(), CancellationToken.None))
+            .ReturnsAsync([]);
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrdersReadyToDispatchRequest();
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().BeNull();
+        response.IsSuccess.Should().BeTrue();
+        response.Value!.Count.Should().Be(0);
     }
 }

@@ -77,8 +77,14 @@ public class OrderRepositoryTests
         result.Should().BeNull();
     }
 
-    [Fact]
-    public async Task Must_Return_Orders_Awaiting_Picking_When_There_Are_Orders_Awaiting_Picking()
+    [Theory]
+    [InlineData(OrderStatusEnum.SEPARATION)]
+    [InlineData(OrderStatusEnum.EXPEDITION)]
+    [InlineData(OrderStatusEnum.SCHEDULED)]
+    [InlineData(OrderStatusEnum.TRANSIT)]
+    [InlineData(OrderStatusEnum.DELIVERED)]
+    [InlineData(OrderStatusEnum.FAILED)]
+    public async Task Must_Return_OrdersInThe_InformedStatus_When_ThereAreOrders_InThe_DesiredStatus(OrderStatusEnum desiredStatus)
     {
         using var context = new AppDbContext(_dbContext);
         context.Database.EnsureDeleted();
@@ -87,22 +93,31 @@ public class OrderRepositoryTests
         var orders = OrderRepositoryTestData.Orders().AsEnumerable();
         await repository.CreateRangeAsync(orders, CancellationToken.None);
 
-        var result = await repository.AwaitingSeparationAsync(CancellationToken.None);
+        var result = await repository.GetOrdersByStatusAsync(desiredStatus, CancellationToken.None);
         result.Should().NotBeNull();
-        result.Should().OnlyContain(x => x.Status == OrderStatusEnum.SEPARATION);
+        result.Count.Should().BeGreaterThan(0);
+        result.Should().OnlyContain(x => x.Status == desiredStatus);
     }
 
-    [Fact]
-    public async Task Should_Not_Return_Orders_Awaiting_Picking_When_ThereAreNo_Orders_Awaiting_Picking()
+    [Theory]
+    [InlineData(OrderStatusEnum.SEPARATION)]
+    [InlineData(OrderStatusEnum.EXPEDITION)]
+    [InlineData(OrderStatusEnum.SCHEDULED)]
+    [InlineData(OrderStatusEnum.TRANSIT)]
+    [InlineData(OrderStatusEnum.DELIVERED)]
+    [InlineData(OrderStatusEnum.FAILED)]
+    public async Task Should_Not_Return_Orders_InThe_InformedStatus_When_ThereAreNo_OrdersInThe_DesiredStatus(OrderStatusEnum desiredStatus)
     {
         using var context = new AppDbContext(_dbContext);
         context.Database.EnsureDeleted();
         var repository = new OrderRepository(context);
 
-        var orders = OrderRepositoryTestData.Orders().Where(x => x.Status != OrderStatusEnum.SEPARATION).ToList().AsEnumerable();
+        var orders = OrderRepositoryTestData.Orders().Where(x => x.Status != desiredStatus).ToList().AsEnumerable();
         await repository.CreateRangeAsync(orders, CancellationToken.None);
 
-        var result = await repository.AwaitingSeparationAsync(CancellationToken.None);
+        var result = await repository.GetOrdersByStatusAsync(desiredStatus, CancellationToken.None);
+        result.Should().NotBeNull();
         result.Count.Should().Be(0);
+        result.Should().BeNullOrEmpty();
     }
 }

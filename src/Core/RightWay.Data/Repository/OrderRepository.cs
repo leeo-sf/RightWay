@@ -16,9 +16,9 @@ public class OrderRepository(AppDbContext context)
             .AsNoTracking()
             .FirstOrDefaultAsync();
 
-    public async Task<List<Order>> AwaitingSeparationAsync(CancellationToken cancellationToken)
+    public async Task<List<Order>> GetOrdersByStatusAsync(OrderStatusEnum status, CancellationToken cancellationToken)
         => await _context.Order
-            .Where(x => x.Status == OrderStatusEnum.SEPARATION)
+            .Where(x => x.Status == status)
             .Include(x => x.Address)
             .Include(x => x.Address.BaseAddress)
             .AsNoTracking()
