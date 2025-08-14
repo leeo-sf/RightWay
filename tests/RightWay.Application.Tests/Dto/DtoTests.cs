@@ -17,9 +17,9 @@ public class DtoTests
     [Theory]
     [InlineData(0.10, 1.20, PriorityLevelEnum.URGENT, "URGENT", OrderStatusEnum.SEPARATION, "In Separation")]
     [InlineData(0.99, 1.01, PriorityLevelEnum.LOW, "LOW", OrderStatusEnum.TRANSIT, "In Transit")]
-    [InlineData(0.81, 1, PriorityLevelEnum.NORMAL, "NORMAL", OrderStatusEnum.PENDING, "Pending")]
+    [InlineData(0.81, 1, PriorityLevelEnum.NORMAL, "NORMAL", OrderStatusEnum.EXPEDITION, "Expedition")]
     [InlineData(0.10, 1.20, PriorityLevelEnum.URGENT, "URGENT", OrderStatusEnum.DELIVERED, "Delivered")]
-    [InlineData(0.67, 1.47, PriorityLevelEnum.LOW, "LOW", OrderStatusEnum.SCHEDULED, "Scheduled")]
+    [InlineData(0.67, 1.47, PriorityLevelEnum.LOW, "LOW", OrderStatusEnum.DISPATCH, "Dispatched")]
     [InlineData(27, 0.45, PriorityLevelEnum.NORMAL, "NORMAL", OrderStatusEnum.FAILED, "Failed")]
     public void Must_Convert_An_Order_ToDto_When_Prompted(float weight, float height, PriorityLevelEnum priorityLevel, string priorityLevelDescription, OrderStatusEnum status, string statusDescription)
     {

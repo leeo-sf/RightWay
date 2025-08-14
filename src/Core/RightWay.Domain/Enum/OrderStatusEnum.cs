@@ -6,10 +6,10 @@ public enum OrderStatusEnum
 {
     [Description("In Separation")]
     SEPARATION,
-    [Description("Pending")]
-    PENDING,
-    [Description("Scheduled")]
-    SCHEDULED,
+    [Description("Expedition")]
+    EXPEDITION,
+    [Description("Dispatched")]
+    DISPATCH,
     [Description("In Transit")]
     TRANSIT,
     [Description("Delivered")]
