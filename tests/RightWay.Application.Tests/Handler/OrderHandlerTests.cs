@@ -113,4 +113,50 @@ public class OrderHandlerTests
         response.IsSuccess.Should().BeTrue();
         response.Value!.Count.Should().Be(0);
     }
+
+    [Fact]
+    public async Task Handler_Must_Return_OrderNotFound_When_Id_DoesNot_Exists_ToChange_Dispatched_Order()
+    {
+        mock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync((Order?)null);
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrderDispatchedRequest(Guid.NewGuid());
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().NotBeNull();
+        response.Exception.Message.Should().Be("Order not located");
+        response.Exception.Should().BeOfType<KeyNotFoundException>();
+        response.IsSuccess.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Handler_Must_Return_Order_Has_AlreadyBeen_Dispatched_When_StatusIsNot_Expedition()
+    {
+        mock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(OrderTestData.Orders().Where(x => x.Status != OrderStatusEnum.EXPEDITION).FirstOrDefault());
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrderDispatchedRequest(Guid.NewGuid());
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().NotBeNull();
+        response.Exception.Message.Should().Be("Order has already been dispatched");
+        response.Exception.Should().BeOfType<ApplicationException>();
+        response.IsSuccess.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task Handler_Must_ChangeOrder_ToDispatched_When_TheIdExists_And_IsInDispatchStatus()
+    {
+        mock.Setup(x => x.GetByIdAsync(It.IsAny<Guid>(), CancellationToken.None))
+            .ReturnsAsync(OrderTestData.Orders().Where(x => x.Status == OrderStatusEnum.EXPEDITION).FirstOrDefault());
+        var handler = new OrderHandler(mock.Object, mapper);
+        var command = new OrderDispatchedRequest(Guid.NewGuid());
+        var response = await handler.Handle(command, CancellationToken.None);
+
+        response.Should().NotBeNull();
+        response.Exception.Should().BeNull();
+        response.IsSuccess.Should().BeTrue();
+    }
 }

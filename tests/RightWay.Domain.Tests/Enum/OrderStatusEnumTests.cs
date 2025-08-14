@@ -8,7 +8,7 @@ public class OrderStatusEnumTests
     [Theory]
     [InlineData(OrderStatusEnum.SEPARATION, 0, "In Separation")]
     [InlineData(OrderStatusEnum.EXPEDITION, 1, "Expedition")]
-    [InlineData(OrderStatusEnum.SCHEDULED, 2, "Scheduled")]
+    [InlineData(OrderStatusEnum.DISPATCH, 2, "Dispatched")]
     [InlineData(OrderStatusEnum.TRANSIT, 3, "In Transit")]
     [InlineData(OrderStatusEnum.DELIVERED, 4, "Delivered")]
     [InlineData(OrderStatusEnum.FAILED, 5, "Failed")]

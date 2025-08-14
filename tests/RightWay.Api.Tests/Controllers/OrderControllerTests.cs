@@ -49,4 +49,14 @@ public class OrderControllerTests
 
         _mock.Verify(m => m.Send(It.IsAny<OrdersReadyToDispatchRequest>(), It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Fact]
+    public async Task Must_Call_The_Mediator_ToUpdateOrder_ToDispatched_When_Requested()
+    {
+        var controller = new OrderController(_mock.Object);
+        var request = Guid.NewGuid();
+        await controller.MarkOrderDispatchedAsAsync(request);
+
+        _mock.Verify(m => m.Send(It.IsAny<OrderDispatchedRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
 }

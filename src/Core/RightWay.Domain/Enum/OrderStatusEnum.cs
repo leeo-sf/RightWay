@@ -8,8 +8,8 @@ public enum OrderStatusEnum
     SEPARATION,
     [Description("Expedition")]
     EXPEDITION,
-    [Description("Scheduled")]
-    SCHEDULED,
+    [Description("Dispatched")]
+    DISPATCH,
     [Description("In Transit")]
     TRANSIT,
     [Description("Delivered")]

@@ -14,7 +14,8 @@ public class OrderHandler
     : IRequestHandler<OrderConfirmedRequest, Result<StatusOperationResponse>>,
         IRequestHandler<OrdersAwaitingSeparationRequest, Result<List<OrderDto>>>,
         IRequestHandler<OrderSeparatedRequest, Result>,
-        IRequestHandler<OrdersReadyToDispatchRequest, Result<List<OrderDto>>>
+        IRequestHandler<OrdersReadyToDispatchRequest, Result<List<OrderDto>>>,
+        IRequestHandler<OrderDispatchedRequest, Result>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IMapper _mapper;
@@ -69,5 +70,19 @@ public class OrderHandler
         return orders is not null
             ? _mapper.Map<List<OrderDto>>(orders)
             : [];
+    }
+
+    public async Task<Result> Handle(OrderDispatchedRequest request, CancellationToken cancellationToken)
+    {
+        var order = await _orderRepository.GetByIdAsync(request.Id, cancellationToken);
+
+        if (order is null)
+            return new(new KeyNotFoundException("Order not located"));
+
+        if (!order.Status.Equals(OrderStatusEnum.EXPEDITION))
+            return new(new ApplicationException("Order has already been dispatched"));
+
+        await _orderRepository.UpdateAsync(order with { updatedIn = DateTime.Now.ToUniversalTime(), Status = OrderStatusEnum.DISPATCH }, cancellationToken);
+        return new(true);
     }
 }
