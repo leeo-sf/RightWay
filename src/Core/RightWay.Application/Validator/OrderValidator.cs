@@ -16,7 +16,7 @@ public class OrderValidator
         RuleFor(c => c.Height).NotEmpty().WithMessage(OrderMessage.NotEmptyHeight)
             .InclusiveBetween(0.01f, 1.50f).WithMessage(OrderMessage.HeightGreatherThanPermitted);
 
-        RuleFor(c => c.PriorityLevel).NotEmpty().WithMessage(OrderMessage.NotEmptyPriorityLevel)
+        RuleFor(c => c.PriorityLevel).NotNull().WithMessage(OrderMessage.NotEmptyPriorityLevel)
             .Must(status => Enum.IsDefined(typeof(PriorityLevelEnum), status)).WithMessage(OrderMessage.InvalidPriorityLevel);
 
         RuleFor(c => c.Address).NotNull().WithMessage(OrderMessage.AddressNotEmpty)

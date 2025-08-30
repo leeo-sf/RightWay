@@ -2,5 +2,5 @@
 
 public enum PriorityLevelEnum
 {
-    LOW, NORMAL, URGENT
+    NORMAL, LOW, URGENT
 }

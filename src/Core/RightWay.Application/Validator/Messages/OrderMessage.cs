@@ -3,6 +3,7 @@
 public static class OrderMessage
 {
     public static string NotEmptyOrder = "At least one order must be sent";
+    public static string NumberOfOrdersAboveTheAllowed = "Only 100  orders are allowed to be registered at a time";
     public static string NotEmptyWeight = "The 'Weight' must be filled";
     public static string WeightGreatherThanPermitted = "Weight greater than permitted";
     public static string NotEmptyHeight = "The 'Height' must be filled";

@@ -10,7 +10,8 @@ public class OrderConfirmedValidator
     public OrderConfirmedValidator()
     {
         RuleFor(c => c.Orders)
-            .NotEmpty().WithMessage(OrderMessage.NotEmptyOrder);
+            .NotEmpty().WithMessage(OrderMessage.NotEmptyOrder)
+            .Must(order => order.Count <= 100).WithMessage(OrderMessage.NumberOfOrdersAboveTheAllowed);
 
         RuleForEach(c => c.Orders)
             .SetValidator(new OrderValidator());

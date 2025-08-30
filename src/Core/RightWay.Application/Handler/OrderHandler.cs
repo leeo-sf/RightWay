@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using RightWay.Application.Config;
 using RightWay.Application.Dto;
 using RightWay.Application.Request.Order;
 using RightWay.Application.Response;
@@ -7,6 +8,7 @@ using RightWay.Domain.Entity;
 using RightWay.Domain.Entity.Base;
 using RightWay.Domain.Enum;
 using RightWay.Domain.Interface;
+using RightWay.RabbitMQ.Interface;
 
 namespace RightWay.Application.Handler;
 
@@ -19,17 +21,34 @@ public class OrderHandler
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IMapper _mapper;
+    //private readonly AppConfiguration _appConfig;
+    //private readonly IRabbitMQService _rabbitMQService;
+    private readonly IAddressRepository _addressRepository;
 
     public OrderHandler(
         IOrderRepository orderRepository,
-        IMapper mapper)
+        IMapper mapper,
+        //AppConfiguration appConfig,
+        //IRabbitMQService rabbitMQService,
+        IAddressRepository addressRepository)
     {
         _orderRepository = orderRepository;
         _mapper = mapper;
+        //_appConfig = appConfig;
+        //_rabbitMQService = rabbitMQService;
+        _addressRepository = addressRepository;
     }
 
     public async Task<Result<StatusOperationResponse>> Handle(OrderConfirmedRequest request, CancellationToken cancellationToken)
     {
+        // buscar pedidos existentes no banco que já tenham a latitude e longitede registrados para evitar duplicidade
+        var orderAddresses = request.Orders
+            .Select(ord => (ord.Address.ZipCode, ord.Address.Number, ord.Address.PublicPlace, ord.Address.MunicipalCode)).ToList();
+        var registeredAddresses = await _addressRepository.GetExistingAddressesAsync(orderAddresses, cancellationToken);
+        if (registeredAddresses is null)
+        {
+            Console.WriteLine("Testing");
+        }
         var orders = request.Orders.Select(order =>
         {
             Guid orderId = Guid.NewGuid(), addressId = Guid.NewGuid(), baseAddressId = Guid.NewGuid();
@@ -38,7 +57,8 @@ public class OrderHandler
             Address address = new(addressId, createdAt, updatedIn, order.Address.Number, order.Address.Complement!, baseAddressId, orderId, null) { BaseAddress = baseAddress };
             return new Order(orderId, createdAt, updatedIn, order.Weight, order.Height, order.PriorityLevel, OrderStatusEnum.SEPARATION, addressId) { Address = address };
         });
-        await _orderRepository.CreateRangeAsync(orders, cancellationToken);
+        //await _orderRepository.CreateRangeAsync(orders, cancellationToken);
+        //await _rabbitMQService.PublisherAsync<IEnumerable<Order>>(new(_appConfig.RabbitMQ.HostName, _appConfig.RabbitMQ.Password, _appConfig.RabbitMQ.UserName, _appConfig.RabbitMQ.VirtualHost, _appConfig.RabbitMQ.Queues.SeparationQueue, orders));
         return new StatusOperationResponse("Orders awaiting separation.");
     }
 
@@ -46,7 +66,9 @@ public class OrderHandler
     {
         var orders = await _orderRepository.GetOrdersByStatusAsync(OrderStatusEnum.SEPARATION, cancellationToken);
         return orders is not null
-            ? _mapper.Map<List<OrderDto>>(orders)
+            ? _mapper.Map<List<OrderDto>>(orders
+                .OrderByDescending(o => o.PriorityLevel)
+                .ThenBy(o => o.CreatedIn))
             : [];
     }
 
